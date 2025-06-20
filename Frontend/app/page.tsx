@@ -4,7 +4,7 @@ import { ArrowRight, MapPin, Compass, User } from "lucide-react"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex  flex-col">
       <header className="border-b py-4">
         <div className="container flex justify-between items-center">
           <div className="flex items-center gap-2">

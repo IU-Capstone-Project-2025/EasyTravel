@@ -27,7 +27,7 @@ export default function FeedbackPage() {
     <div className="min-h-screen flex flex-col">
       <header className="border-b py-4">
         <div className="container flex justify-between items-center">
-          <Link href="/public" className="flex items-center gap-2">
+          <Link href="/" className="flex items-center gap-2">
             <Compass className="h-6 w-6 text-neutral-900" />
             <span className="font-medium text-xl">EasyTravel</span>
           </Link>
