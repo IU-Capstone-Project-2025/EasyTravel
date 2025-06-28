@@ -1,4 +1,4 @@
 from app.models.dbModels.UserEntity import UserEntity
-from app.models.UserRole import UserRole
+from app.models.InterestsEnum import InterestsEnum
 
-__all__ = ["UserEntity", "UserRole"]
+__all__ = ["UserEntity", "InterestsEnum"]

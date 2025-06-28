@@ -1,4 +1,5 @@
-from uuid import uuid4, UUID
+# app/services/UserService.py
+from uuid import uuid4
 
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -6,12 +7,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.infrastructure.repositories.UserRepository import UserRepository
 from app.models.dbModels.UserEntity import UserEntity
 from app.models.dtoModels.UserDTO import UserCreateDTO, UserOutDTO
-from app.models.UserRole import UserRole
 from app.services.AuthorizationService import AuthService
 
-
 async def add_user(dto: UserCreateDTO, session: AsyncSession) -> UserOutDTO:
-
     repo = UserRepository(session)
 
     if await repo.find_by_email(str(dto.email)):
@@ -20,8 +18,7 @@ async def add_user(dto: UserCreateDTO, session: AsyncSession) -> UserOutDTO:
             detail="User with given email already exists",
         )
 
-    auth = AuthService()
-    hashed_pw = auth.get_password_hash(dto.password)
+    hashed_pw = AuthService().get_password_hash(dto.password)
 
     entity = UserEntity(
         id=uuid4(),
@@ -29,17 +26,13 @@ async def add_user(dto: UserCreateDTO, session: AsyncSession) -> UserOutDTO:
         last_name=dto.last_name,
         email=str(dto.email),
         hashed_password=hashed_pw,
-        role=UserRole.BUYER,
+        # ** new fields **
+        city=dto.city,
+        about_me=dto.about_me,
+        interests=[i.value for i in dto.interests],
+        additional_interests=dto.additional_interests,
     )
 
     saved = await repo.add_user(entity)
-
+    # repo.add_user returns entity.to_dict(); pydantic will pick it up
     return UserOutDTO(**saved)
-
-
-async def change_role(user_id: UUID, role: UserRole, session: AsyncSession) -> UserOutDTO:
-    repo = UserRepository(session)
-    updated = await repo.set_role(user_id, role)
-    if not updated:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-    return UserOutDTO(**updated)

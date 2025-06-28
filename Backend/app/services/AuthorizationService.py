@@ -6,6 +6,7 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt.exceptions import InvalidTokenError
 from passlib.context import CryptContext
+from pydantic.v1 import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.infrastructure.db.session import fastapi_get_db
@@ -119,29 +120,39 @@ async def get_current_user_service(
     token: Annotated[str, Depends(oauth2_scheme)],
     session: AsyncSession = Depends(fastapi_get_db),
 ) -> UserOutDTO:
+    """
+    Decode and verify the Bearer JWT, look up the user in DB,
+    and return a fully populated UserOutDTO including interests.
+    """
     creds_exc = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
+    # 1) decode & validate token
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         email: str | None = payload.get("sub")
-        if email is None:
+        if not email:
             raise creds_exc
     except InvalidTokenError:
         raise creds_exc
 
+    # 2) fetch the user entity from DB
     repo = UserRepository(session)
     user = await repo.find_by_email(email)
     if not user:
         raise creds_exc
 
+    # 3) map to UserOutDTO
     return UserOutDTO(
-        id=user.id,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email=user.email,
-        role=user.role,
+        id                   = user.id,
+        first_name           = user.first_name,
+        last_name            = user.last_name,
+        email                = EmailStr(user.email),
+        city                 = user.city,
+        interests            = user.interests or [],               # List[InterestsEnum]
+        about_me             = user.about_me    or "",             # str
+        additional_interests = user.additional_interests or [],   # List[str]
     )

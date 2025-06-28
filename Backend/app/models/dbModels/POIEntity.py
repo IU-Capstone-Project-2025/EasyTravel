@@ -1,5 +1,5 @@
 # app/models/dbModels/POIEntity.py
-from sqlalchemy import Column, String, Float, Text
+from sqlalchemy import Column, String, Float, Text, ARRAY
 from app.models.dbModels.Entity import EntityDB
 
 class POIEntity(EntityDB):
@@ -11,6 +11,7 @@ class POIEntity(EntityDB):
     city                   = Column(String, nullable=True)
     lat                    = Column(Float, nullable=True)
     lon                    = Column(Float, nullable=True)
+    tags = Column(ARRAY(String))
     enriched_description   = Column(Text, nullable=True)
 
     def to_dict(self):
@@ -21,5 +22,6 @@ class POIEntity(EntityDB):
             "city": self.city,
             "lat": self.lat,
             "lon": self.lon,
+            "tags": self.tags,
             "description": self.enriched_description,
         }
