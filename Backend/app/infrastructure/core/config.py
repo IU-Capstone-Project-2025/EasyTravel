@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
+    ACCESS_EXPIRE:int
     OWNER_EMAIL: str = "owner@example.com"
     OWNER_PASSWORD: str = "owner"
     ASYNC_DATABASE_URI: PostgresDsn | None = None
