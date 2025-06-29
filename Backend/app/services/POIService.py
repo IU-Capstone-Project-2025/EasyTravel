@@ -1,4 +1,3 @@
-# app/services/POIService.py
 import os
 import faiss
 import numpy as np
@@ -11,7 +10,6 @@ from app.config.interest_tags import interest_tags
 from app.models import InterestsEnum
 from app.models.dtoModels.POIOutDTO import POIOutDTO
 
-# ───────────── конфиг ─────────────
 REPO_ROOT    = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 INDEX_FILE   = os.path.join(REPO_ROOT, "DLS", "Indexes", "poi_ivfpq.index")
 META_FILE    = os.path.join(REPO_ROOT, "DLS", "Dataset", "poi_dataset_enriched_incremental.csv")
@@ -20,17 +18,16 @@ DEVICE       = "cpu"
 NLIST_PROBE  = 50
 TOP_N        = 10
 EXPAND_K     = 1000
-# ──────────────────────────────────
 
-# 1) читаем FAISS и метаданные
+ALCOHOL_TAGS  = {"amenity:bar", "amenity:pub", "shop:alcohol", "shop:beverages"}
+ALCOHOL_TYPES = {"bar", "pub", "wine_shop", "beer", "liquor_store"}
+
 index = faiss.read_index(INDEX_FILE)
 index.nprobe = NLIST_PROBE
 df = pd.read_csv(META_FILE, dtype=str).set_index("id")
 
-# 2) создаём embedder
 embedder = SentenceTransformer(EMBED_MODEL, device=DEVICE)
 
-# 3) синхронная кэшированная функция
 @lru_cache(maxsize=512)
 def encode_query(q: str) -> np.ndarray:
     v = embedder.encode([q], convert_to_numpy=True)
@@ -51,27 +48,36 @@ class POIService:
         self,
         query: str,
         city: Optional[str],
-            tags: Optional[List[str]] = None,
-            top_n: int = TOP_N,
-            expand_k: int = EXPAND_K
+        tags: Optional[List[str]] = None,
+        top_n: int = TOP_N,
+        expand_k: int = EXPAND_K
     ) -> List[POIOutDTO]:
         if city and city in self.city_map:
             city = self.city_map[city]
 
-        qv = encode_query(query)                      # (1×D)
-        D, I = index.search(qv, expand_k)             # ищем по всему индексу
+        skip_alco_filter = bool(tags and any(t in ALCOHOL_TAGS for t in tags))
+
+        qv = encode_query(query)
+        D, I = index.search(qv, expand_k)
         D, I = D[0], I[0]
 
         results: List[POIOutDTO] = []
         for score, emb_idx in zip(D, I):
             row = df.iloc[emb_idx]
-            poi_id = row.name
+            poi_id   = row.name
+            poi_tags = set(row.get("tags", "").split(","))
+            poi_type = row.get("type", "").lower()
+
             if city is not None and row["city"] != city:
                 continue
-            if tags:
-                poi_tags = set(row["tags"].split(","))
-                if not any(t in poi_tags for t in tags):
-                    continue
+
+            if tags and not poi_tags.intersection(tags):
+                continue
+
+            if not skip_alco_filter and (
+                poi_tags.intersection(ALCOHOL_TAGS) or poi_type in ALCOHOL_TYPES
+            ):
+                continue
 
             results.append(POIOutDTO(
                 id=poi_id,
@@ -89,22 +95,19 @@ class POIService:
         return results
 
     def recommend_by_interests(
-            self,
-            interests: List[InterestsEnum],
-            additional_interests: Optional[str],
-            city: Optional[str],
-            top_n: int = TOP_N
+        self,
+        interests: List[InterestsEnum],
+        additional_interests: Optional[str],
+        city: Optional[str],
+        top_n: int = TOP_N
     ) -> List[POIOutDTO]:
-        seen = set()
-        recs = []
+        seen, recs = set(), []
 
-        # Собираем поток интересов
         pool = list(interests)
         if additional_interests:
             pool.append(additional_interests)
 
         for intr in pool:
-            # Определяем текстовый запрос
             if isinstance(intr, InterestsEnum):
                 text_query = intr.value.replace("_", " ")
                 key = intr.value
@@ -112,17 +115,12 @@ class POIService:
                 text_query = str(intr).replace("_", " ")
                 key = str(intr)
 
-            # Берём теги для этого интереса (если есть)
             tags = interest_tags.get(key, [])
-
-            # Сколько ещё нужно докинуть
             remaining = top_n - len(recs)
             if remaining <= 0:
                 break
 
-            # Ищем ровно remaining
             hits = self.search_in_city(text_query, city, tags=tags, top_n=remaining)
-
             for poi in hits:
                 if poi.id not in seen:
                     seen.add(poi.id)
@@ -132,6 +130,4 @@ class POIService:
 
         return recs
 
-
-# синглтон-сервис
 poi_service = POIService()
