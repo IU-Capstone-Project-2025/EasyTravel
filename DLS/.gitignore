@@ -1,9 +1,3 @@
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.env
-.env.*
-.idea/
-app.log
-
+# файлы эмбеддингов DLS
+DLS/Embeddings/*.npy
+DLS/experiments/indexes/*.npy

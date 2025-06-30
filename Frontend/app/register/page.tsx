@@ -1,5 +1,4 @@
-"use client"
-
+"use client";
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, ArrowRight, Compass } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+
 
 const interestsList = [
   "Музеи",
