@@ -168,7 +168,7 @@ export default function SearchPage() {
                   </SelectContent>
                 </Select>
               </div>
-            </div>
+              /* */</div>
 
             <Button type="submit" className="w-full py-6 text-base">
               Найти идеальные места
