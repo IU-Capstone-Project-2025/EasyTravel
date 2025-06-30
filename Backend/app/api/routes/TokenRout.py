@@ -9,7 +9,7 @@ from app.models.dtoModels.TokenDTO import TokenDTO
 from app.models.dtoModels.RefreshTokenDTO import RefreshTokenDTO
 from app.models.dtoModels.UserDTO import UserOutDTO
 
-router = APIRouter(prefix="/api/token")
+router = APIRouter()
 
 
 @router.post("/get-token", response_model=TokenDTO)
