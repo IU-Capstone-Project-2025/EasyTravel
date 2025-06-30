@@ -249,17 +249,6 @@ export default function RegisterPage() {
                       />
                     </div>
 
-                    <div className="flex items-center space-x-2 mb-4">
-                      <Checkbox
-                          id="notifications"
-                          checked={notifications}
-                          onCheckedChange={(val) => setNotifications(!!val)}
-                      />
-                      <Label htmlFor="notifications" className="text-sm font-normal">
-                        Получать уведомления о новых интересных местах
-                      </Label>
-                    </div>
-
                     <div className="flex gap-3">
                       <Button type="button" variant="outline" onClick={() => setStep(1)} className="flex-1">
                         <ArrowLeft className="mr-2 h-4 w-4" />

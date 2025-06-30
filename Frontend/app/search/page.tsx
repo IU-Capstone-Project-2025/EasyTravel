@@ -13,7 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Compass, Search, MapPin, Clock, Tag } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
-const popularCities = ["Москва", "Санкт-Петербург", "Казань", "Сочи", "Калининград", "Владивосток"]
+const popularCities = ["Москва", "Санкт-Петербург", "Казань", "Екатеринбург", "Уфа", "Нижний Новгород"]
 
 const popularTags = [
   "Музеи",
@@ -140,6 +140,7 @@ export default function SearchPage() {
               </div>
             </div>
 
+            {/*
             <div className="space-y-4">
               <div className="flex items-center gap-2 mb-2">
                 <Clock className="h-5 w-5 text-neutral-500" />
@@ -168,7 +169,8 @@ export default function SearchPage() {
                   </SelectContent>
                 </Select>
               </div>
-              /* */</div>
+            </div>
+            */}
 
             <Button type="submit" className="w-full py-6 text-base">
               Найти идеальные места
