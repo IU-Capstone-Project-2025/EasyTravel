@@ -268,6 +268,7 @@ export default function RegisterPage() {
         <footer className="border-t py-6">
           <div className="container text-center text-neutral-500 text-sm">© 2023 EasyTravel. Все права защищены.</div>
         </footer>
+
       </div>
   );
 }
