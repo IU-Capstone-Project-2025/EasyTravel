@@ -2,36 +2,47 @@
 version: '3.8'
 
 services:
-  db:
-    image: postgres:15
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mydb
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-
-  backend:
+  app:
     build:
-      context: ./backend
+      context: ./Backend
       dockerfile: Dockerfile
+    container_name: fastapi_app
+    ports:
+      - "8000:8000"
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgres://user:password@db:5432/mydb
-    ports:
-      - "8000:8000"
+      DATABASE_USER: emil
+      DATABASE_PASSWORD: emilgan12
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_NAME: fastupdb
+    volumes:
+      - ./Backend:/usr/src/app
+      - ./DLS:/usr/src/DLS
+    restart: always
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    depends_on:
-      - backend
+  db:
+    image: postgres:15
+    container_name: fastapi_db
+    restart: always
     ports:
-      - "3000:3000"
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: emil
+      POSTGRES_PASSWORD: emilgan12
+      POSTGRES_DB: fastupdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+#  frontend:
+#    build:
+#      context: ./frontend
+#      dockerfile: Dockerfile
+#    depends_on:
+#      - backend
+#    ports:
+#      - "3000:3000"
 
 volumes:
-  postgres_data:
+  pgdata:

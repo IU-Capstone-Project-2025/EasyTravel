@@ -1,0 +1,3 @@
+# файлы эмбеддингов DLS
+DLS/Embeddings/*.npy
+DLS/experiments/indexes/*.npy
