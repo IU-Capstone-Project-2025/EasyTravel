@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, ArrowRight, Compass } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Cookies from "js-cookie";
 
 
 const interestsList = [
@@ -28,6 +29,25 @@ const interestsList = [
   "Фотография",
   "Тихие места",
 ];
+
+// Сопоставление русских интересов с enum InterestsEnum
+const interestsMap: Record<string, string> = {
+  "Музеи": "museums",
+  "Искусство": "art",
+  "История": "history",
+  "Архитектура": "architecture",
+  "Природа": "nature",
+  "Парки": "parks",
+  "Кафе": "cafes",
+  "Рестораны": "restaurants",
+  "Шоппинг": "shopping",
+  "Спорт": "sports",
+  "Активный отдых": "active",
+  "Ночная жизнь": "nightlife",
+  "Местная кухня": "cuisine",
+  "Фотография": "photography",
+  "Тихие места": "quiet",
+};
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -60,15 +80,14 @@ export default function RegisterPage() {
       last_name: lastName,
       email,
       password,
-      city_of_residence: city,
-      bio,
-      interests: selectedInterests,
-      additional_preferences: preferences,
-      notifications_opt_in: notifications,
+      city,
+      about_me: bio,
+      interests: selectedInterests.map(i => interestsMap[i]).filter(Boolean),
+      additional_interests: preferences,
     };
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user/register`, {
+      const res = await fetch('/api/user/register', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -83,9 +102,22 @@ export default function RegisterPage() {
 
       const data = await res.json();
       console.log("Registered user:", data);
-      // Optionally store returned token or user data
-
-      router.push("/recommendations");
+      // Автоматический логин после регистрации
+      const loginRes = await fetch('/api/token/get-token', {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams({
+          username: email,
+          password: password,
+        }),
+      });
+      if (loginRes.ok) {
+        const loginData = await loginRes.json();
+        Cookies.set("access_token", loginData.access_token, { expires: 7 });
+        router.push("/recommendations");
+      } else {
+        router.push("/login");
+      }
     } catch (err) {
       console.error(err);
       alert("Произошла ошибка при подключении к серверу.");

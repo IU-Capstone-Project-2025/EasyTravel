@@ -8,12 +8,12 @@ from app.models.dtoModels.UserDTO import UserOutDTO
 from app.services.AuthorizationService import get_current_user_service
 from app.services.POIService      import POIService, poi_service
 
-router = APIRouter(prefix="/api/poi")
+router = APIRouter()
 
 def get_poi_service() -> POIService:
     return poi_service
 
-@router.get("/", response_model=List[POIOutDTO])
+@router.get("", response_model=List[POIOutDTO])
 def search_poi(
     current_user: UserOutDTO = Depends(get_current_user_service),
     q:    str                 = Query(..., alias="q"),
@@ -29,7 +29,7 @@ def search_poi(
 @router.get(
     "/recommendations",
     response_model=List[POIOutDTO],
-    summary="Recommend POIs for the current user’s interests",
+    summary="Recommend POIs for the current user's interests",
 )
 def recommend_poi(
     current_user: UserOutDTO = Depends(get_current_user_service),
