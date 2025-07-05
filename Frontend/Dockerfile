@@ -1,19 +1,22 @@
-# frontend/Dockerfile
+# Frontend/Dockerfile
 FROM node:18-alpine
 
-# Create app directory
+# Рабочая директория внутри контейнера
 WORKDIR /app
 
-# Install app dependencies
-COPY frontend/package*.json ./
-RUN npm ci
+# Устанавливаем pnpm
+RUN npm install -g pnpm
 
-# Bundle app source
-COPY frontend/ .
+# Копируем только манифесты и ставим зависимости
+COPY package*.json ./
+COPY pnpm-lock.yaml ./
+RUN pnpm install
 
-# Build the React app
-RUN npm run build
+# Копируем всё приложение
+COPY . .
 
-# Serve the build folder
-RUN npm install -g serve
-CMD ["serve", "-s", "build", "-l", "3000"]
+# Собираем Next.js-приложение
+RUN pnpm run build
+
+# В проде запускаем Next.js сервер
+CMD ["pnpm", "run", "start"]

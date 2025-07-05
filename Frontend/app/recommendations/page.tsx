@@ -39,8 +39,8 @@ export default function RecommendationsPage() {
         const token = Cookies.get("access_token");
         if (!token) throw new Error("Войдите в систему, чтобы увидеть рекомендации");
         const res = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/poi/api/poi/recommendations?limit=${limit}`,
-            { headers: { Authorization: `Bearer ${token}` } }
+            '/api/poi/recommendations?limit=' + limit,
+            { headers: { Authorization: 'Bearer ' + token } }
         );
         if (!res.ok) throw new Error(`Ошибка ${res.status}`);
         const data: Poi[] = await res.json();

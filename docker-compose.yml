@@ -2,6 +2,25 @@
 version: '3.8'
 
 services:
+  frontend:
+    depends_on:
+      - app
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile
+    container_name: easytravel_frontend
+    ports:
+      - "3000:3000"
+    environment:
+      # на клиенте будем дергать http://localhost:8000
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules
+    command: [ "pnpm", "run", "dev" ]
+    restart: always
+
+
   app:
     build:
       context: ./Backend
@@ -34,15 +53,6 @@ services:
       POSTGRES_DB: fastupdb
     volumes:
       - pgdata:/var/lib/postgresql/data
-
-#  frontend:
-#    build:
-#      context: ./frontend
-#      dockerfile: Dockerfile
-#    depends_on:
-#      - backend
-#    ports:
-#      - "3000:3000"
 
 volumes:
   pgdata:

@@ -40,8 +40,7 @@ app.add_exception_handler(RequestValidationError, global_exception_handler)
 # Middleware для логирования каждого запроса
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
--   logger.info("➡️  %s %s", rВequest.method, request.url)
-+   logger.info("➡️  %s %s", request.method, request.url)
+    logger.info("➡️  %s %s", request.method, request.url)
     response = await call_next(request)
     logger.info("⬅️  %s %s", response.status_code, request.url)
     return response
