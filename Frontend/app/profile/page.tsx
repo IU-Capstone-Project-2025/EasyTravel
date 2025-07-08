@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -24,11 +23,9 @@ export default function ProfilePage() {
 
     useEffect(() => {
         try {
-            // 1) Read the exact object you logged in registration:
             const raw = localStorage.getItem("profile");
             if (!raw) throw new Error("No profile in localStorage");
-            const parsed: UserProfile = JSON.parse(raw);
-            setProfile(parsed);
+            setProfile(JSON.parse(raw));
         } catch (err) {
             console.error("Failed to load profile:", err);
         }
@@ -76,7 +73,7 @@ export default function ProfilePage() {
                         </div>
                     </div>
 
-                    <Button className="w-full mt-6" onClick={() => router.push("/recommendations")}>
+                    <Button className="w-full mt-6" onClick={() => router.push("/recommendations") }>
                         Go to Recommendations
                         <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>

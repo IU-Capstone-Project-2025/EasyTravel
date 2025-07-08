@@ -11,7 +11,6 @@ import { ArrowLeft, ArrowRight, Compass } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import Cookies from "js-cookie";
 
-
 const interestsList = [
   "Музеи",
   "Искусство",
@@ -30,7 +29,6 @@ const interestsList = [
   "Тихие места",
 ];
 
-// Сопоставление русских интересов с enum InterestsEnum
 const interestsMap: Record<string, string> = {
   "Музеи": "museums",
   "Искусство": "art",
@@ -64,7 +62,6 @@ export default function RegisterPage() {
   // Step 2 fields
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [preferences, setPreferences] = useState("");
-  const [notifications, setNotifications] = useState(false);
 
   const handleInterestToggle = (interest: string) => {
     setSelectedInterests((prev) =>
@@ -74,7 +71,6 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // payload matching UserCreateDTO + extra preferences
     const payload = {
       first_name: firstName,
       last_name: lastName,
@@ -82,45 +78,48 @@ export default function RegisterPage() {
       password,
       city,
       about_me: bio,
-      interests: selectedInterests.map(i => interestsMap[i]).filter(Boolean),
+      interests: selectedInterests.map((i) => interestsMap[i]).filter(Boolean),
       additional_interests: preferences,
     };
 
     try {
       const res = await fetch('/api/user/register', {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
 
       if (!res.ok) {
         const errorData = await res.json();
-        console.error("Registration failed:", errorData);
-        alert("Ошибка при регистрации: " + errorData.detail?.[0]?.msg || res.statusText);
+        alert('Ошибка при регистрации: ' + (errorData.detail?.[0]?.msg || res.statusText));
         return;
       }
 
       const data = await res.json();
-      console.log("Registered user:", data);
-      // Автоматический логин после регистрации
+      console.log('Registered user:', data);
+
+      // Automatic login
       const loginRes = await fetch('/api/token/get-token', {
-        method: "POST",
-        headers: { "Content-Type": "application/x-www-form-urlencoded" },
-        body: new URLSearchParams({
-          username: email,
-          password: password,
-        }),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ username: email, password }),
       });
+
       if (loginRes.ok) {
         const loginData = await loginRes.json();
-        Cookies.set("access_token", loginData.access_token, { expires: 7 });
-        router.push("/profile");
+        Cookies.set('access_token', loginData.access_token, { expires: 7 });
+
+        // Save profile data to localStorage for ProfilePage
+        localStorage.setItem('profile', JSON.stringify(data));
+
+        // Redirect to profile page
+        router.push('/profile');
       } else {
-        router.push("/login");
+        router.push('/login');
       }
     } catch (err) {
       console.error(err);
-      alert("Произошла ошибка при подключении к серверу.");
+      alert('Произошла ошибка при подключении к серверу.');
     }
   };
 
@@ -139,12 +138,12 @@ export default function RegisterPage() {
           <div className="max-w-md mx-auto">
             <div className="mb-8">
               <h1 className="text-2xl font-bold mb-2">
-                {step === 1 ? "Создайте аккаунт" : "Расскажите о своих интересах"}
+                {step === 1 ? 'Создайте аккаунт' : 'Расскажите о своих интересах'}
               </h1>
               <p className="text-neutral-600">
                 {step === 1
-                    ? "Заполните информацию о себе для персонализированных рекомендаций"
-                    : "Выберите интересы, чтобы мы могли предложить вам подходящие места"}
+                    ? 'Заполните информацию о себе для персонализированных рекомендаций'
+                    : 'Выберите интересы, чтобы мы могли предложить вам подходящие места'}
               </p>
             </div>
 
@@ -152,17 +151,17 @@ export default function RegisterPage() {
               <div className="flex items-center gap-2">
                 <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        step >= 1 ? "bg-neutral-900 text-white" : "bg-neutral-200 text-neutral-600"
+                        step >= 1 ? 'bg-neutral-900 text-white' : 'bg-neutral-200 text-neutral-600'
                     }`}
                 >
                   1
                 </div>
                 <div className="h-1 w-8 bg-neutral-200">
-                  <div className={`h-full bg-neutral-900 ${step >= 2 ? "w-full" : "w-0"}`}></div>
+                  <div className={`h-full bg-neutral-900 ${step >= 2 ? 'w-full' : 'w-0'}`} />
                 </div>
                 <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        step >= 2 ? "bg-neutral-900 text-white" : "bg-neutral-200 text-neutral-600"
+                        step >= 2 ? 'bg-neutral-900 text-white' : 'bg-neutral-200 text-neutral-600'
                     }`}
                 >
                   2
@@ -277,7 +276,7 @@ export default function RegisterPage() {
                           className="resize-none"
                           rows={3}
                           value={preferences}
-                          onChange={e => setPreferences(e.target.value)}
+                          onChange={(e) => setPreferences(e.target.value)}
                       />
                     </div>
 
@@ -300,7 +299,6 @@ export default function RegisterPage() {
         <footer className="border-t py-6">
           <div className="container text-center text-neutral-500 text-sm">© 2023 EasyTravel. Все права защищены.</div>
         </footer>
-
       </div>
   );
 }
