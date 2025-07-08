@@ -114,7 +114,7 @@ export default function RegisterPage() {
       if (loginRes.ok) {
         const loginData = await loginRes.json();
         Cookies.set("access_token", loginData.access_token, { expires: 7 });
-        router.push("/recommendations");
+        router.push("/profile");
       } else {
         router.push("/login");
       }
