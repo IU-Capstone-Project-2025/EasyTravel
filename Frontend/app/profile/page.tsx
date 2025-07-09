@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Compass, ArrowRight } from "lucide-react";
+import Cookies from "js-cookie";
 import UserMenu from "@/components/user-menu";
 
 interface UserProfile {
@@ -21,6 +22,7 @@ interface UserProfile {
 export default function ProfilePage() {
     const router = useRouter();
     const [profile, setProfile] = useState<UserProfile | null>(null);
+    const homeLink = Cookies.get("access_token") ? "/recommendations" : "/";
 
     useEffect(() => {
         try {
@@ -44,7 +46,7 @@ export default function ProfilePage() {
         <div className="min-h-screen flex flex-col">
             <header className="border-b py-4">
                 <div className="container flex justify-between items-center">
-                    <Link href="/" className="flex items-center gap-2">
+                    <Link href={homeLink} className="flex items-center gap-2">
                         <Compass className="h-6 w-6 text-neutral-900" />
                         <span className="font-medium text-xl">EasyTravel</span>
                     </Link>

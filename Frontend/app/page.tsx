@@ -1,16 +1,25 @@
+"use client"
+
+
 import Link from "next/link"
+import Cookies from "js-cookie"
 import { Button } from "@/components/ui/button"
 import { ArrowRight, MapPin, Compass, User } from "lucide-react"
+import UserMenu from "@/components/user-menu"
+
 
 export default function HomePage() {
+  const loggedIn = Boolean(Cookies.get("access_token"))
   return (
     <div className="min-h-screen flex  flex-col">
       <header className="border-b py-4">
         <div className="container flex justify-between items-center">
-          <div className="flex items-center gap-2">
+          <Link
+            href={loggedIn ? "/recommendations" : "/"}
+            className="flex items-center gap-2">
             <Compass className="h-6 w-6 text-neutral-900" />
             <span className="font-medium text-xl">EasyTravel</span>
-          </div>
+          </Link>
           <nav className="hidden md:flex items-center gap-6">
             <Link href="/search" className="text-neutral-600 hover:text-neutral-900">
               Поиск
@@ -18,12 +27,21 @@ export default function HomePage() {
             <Link href="/recommendations" className="text-neutral-600 hover:text-neutral-900">
               Рекомендации
             </Link>
-            <Link href="/register" className="text-neutral-600 hover:text-neutral-900">
-              <Button variant="outline" size="sm" className="gap-2">
-                <User className="h-4 w-4" />
-                Регистрация
-              </Button>
-            </Link>
+            {loggedIn ? (
+              <UserMenu />
+            ) : (
+              <div className="flex items-center gap-3">
+                <Link href="/login" className="text-neutral-600 hover:text-neutral-900">
+                  <Button variant="ghost" size="sm">Войти</Button>
+                </Link>
+                <Link href="/register" className="text-neutral-600 hover:text-neutral-900">
+                  <Button variant="outline" size="sm" className="gap-2">
+                    <User className="h-4 w-4" />
+                    Регистрация
+                  </Button>
+                </Link>
+              </div>
+            )}
           </nav>
         </div>
       </header>
@@ -38,18 +56,42 @@ export default function HomePage() {
             и интересах.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/register">
-              <Button size="lg" className="gap-2 w-full sm:w-auto">
-                Начать
-                <ArrowRight className="h-4 w-4" />
-              </Button>
-            </Link>
-            <Link href="/search">
-              <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
-                <MapPin className="h-4 w-4" />
-                Искать места
-              </Button>
-            </Link>
+            {loggedIn ? (
+              <>
+                <Link href="/recommendations">
+                  <Button size="lg" className="gap-2 w-full sm:w-auto">
+                    К рекомендациям
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/search">
+                  <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
+                    <MapPin className="h-4 w-4" />
+                    Искать места
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link href="/register">
+                  <Button size="lg" className="gap-2 w-full sm:w-auto">
+                    Начать
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button variant="secondary" size="lg" className="gap-2 w-full sm:w-auto">
+                    Войти
+                  </Button>
+                </Link>
+                <Link href="/search">
+                  <Button variant="outline" size="lg" className="gap-2 w-full sm:w-auto">
+                    <MapPin className="h-4 w-4" />
+                    Искать места
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
         </div>
 
