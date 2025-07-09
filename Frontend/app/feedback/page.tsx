@@ -10,7 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Compass, ThumbsUp, Send, Home } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import UserMenu from "@/components/user-menu"
 
 export default function FeedbackPage() {
   const router = useRouter()
@@ -31,10 +31,7 @@ export default function FeedbackPage() {
             <Compass className="h-6 w-6 text-neutral-900" />
             <span className="font-medium text-xl">EasyTravel</span>
           </Link>
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder.svg" />
-            <AvatarFallback className="bg-neutral-200 text-neutral-600">ИИ</AvatarFallback>
-          </Avatar>
+          <UserMenu />
         </div>
       </header>
 

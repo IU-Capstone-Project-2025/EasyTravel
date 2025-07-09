@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 
 import {Compass, Search as SearchIcon, MapPin, Tag} from "lucide-react";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import UserMenu from "@/components/user-menu";
 
 const popularCities = [
     "Москва",
@@ -119,12 +119,7 @@ export default function SearchPage() {
                                 Мои рекомендации
                             </Button>
                         </Link>
-                        <Avatar className="h-8 w-8">
-                            <AvatarImage src="/placeholder.svg"/>
-                            <AvatarFallback className="bg-neutral-200 text-neutral-600">
-                                ИИ
-                            </AvatarFallback>
-                        </Avatar>
+                        <UserMenu />
                     </div>
                 </div>
             </header>
