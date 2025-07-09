@@ -29,6 +29,7 @@ export default function RecommendationsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string|null>(null);
   const limit = 10;
+  const homeLink = Cookies.get("access_token") ? "/recommendations" : "/";
 
   useEffect(() => {
     const fetchRecs = async () => {
@@ -105,7 +106,7 @@ export default function RecommendationsPage() {
         {/* Header */}
         <header className="border-b py-4">
           <div className="container flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href={homeLink} className="flex items-center gap-2">
               <Compass className="h-6 w-6 text-neutral-900" />
               <span className="font-medium text-xl">EasyTravel</span>
             </Link>

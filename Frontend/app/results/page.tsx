@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Compass, MapPin, ThumbsUp, Filter, List, MapIcon, ArrowRight } from "lucide-react"
+import Cookies from "js-cookie"
 import UserMenu from "@/components/user-menu"
 
 // Динамические импорты Leaflet без SSR
@@ -56,11 +57,13 @@ export default function ResultsPage() {
     }
   }, [])
 
+  const homeLink = Cookies.get("access_token") ? "/recommendations" : "/"
+
   return (
       <div className="min-h-screen flex flex-col">
         <header className="border-b py-4">
           <div className="container flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href={homeLink} className="flex items-center gap-2">
               <Compass className="h-6 w-6 text-neutral-900" />
               <span className="font-medium text-xl">EasyTravel</span>
             </Link>

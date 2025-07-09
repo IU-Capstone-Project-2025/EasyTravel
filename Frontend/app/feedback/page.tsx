@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import { Compass, ThumbsUp, Send, Home } from "lucide-react"
+import Cookies from "js-cookie"
 import UserMenu from "@/components/user-menu"
 
 export default function FeedbackPage() {
@@ -17,6 +18,7 @@ export default function FeedbackPage() {
   const [satisfaction, setSatisfaction] = useState<string | null>(null)
   const [comment, setComment] = useState("")
   const [submitted, setSubmitted] = useState(false)
+  const homeLink = Cookies.get("access_token") ? "/recommendations" : "/"
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -27,7 +29,7 @@ export default function FeedbackPage() {
     <div className="min-h-screen flex flex-col">
       <header className="border-b py-4">
         <div className="container flex justify-between items-center">
-          <Link href="/" className="flex items-center gap-2">
+          <Link href={homeLink} className="flex items-center gap-2">
             <Compass className="h-6 w-6 text-neutral-900" />
             <span className="font-medium text-xl">EasyTravel</span>
           </Link>

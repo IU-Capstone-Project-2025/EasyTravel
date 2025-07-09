@@ -50,6 +50,7 @@ const interestsMap: Record<string, string> = {
 export default function RegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const homeLink = Cookies.get("access_token") ? "/recommendations" : "/";
 
   // Step 1 fields
   const [firstName, setFirstName] = useState("");
@@ -112,8 +113,8 @@ export default function RegisterPage() {
         // Save profile data to localStorage for ProfilePage
         localStorage.setItem('profile', JSON.stringify(data));
 
-        // Redirect to profile page
-        router.push('/profile');
+        // Redirect to recommendations page
+        router.push('/recommendations');
       } else {
         router.push('/login');
       }
@@ -127,7 +128,7 @@ export default function RegisterPage() {
       <div className="min-h-screen flex flex-col">
         <header className="border-b py-4">
           <div className="container flex justify-between items-center">
-            <Link href="/" className="flex items-center gap-2">
+            <Link href={homeLink} className="flex items-center gap-2">
               <Compass className="h-6 w-6 text-neutral-900" />
               <span className="font-medium text-xl">EasyTravel</span>
             </Link>
