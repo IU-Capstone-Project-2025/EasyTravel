@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Compass, ArrowRight } from "lucide-react";
+import UserMenu from "@/components/user-menu";
 
 interface UserProfile {
     id: string;
@@ -47,6 +48,7 @@ export default function ProfilePage() {
                         <Compass className="h-6 w-6 text-neutral-900" />
                         <span className="font-medium text-xl">EasyTravel</span>
                     </Link>
+                    <UserMenu />
                 </div>
             </header>
 

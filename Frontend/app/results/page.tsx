@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Compass, MapPin, ThumbsUp, Filter, List, MapIcon, ArrowRight } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import UserMenu from "@/components/user-menu"
 
 // Динамические импорты Leaflet без SSR
 import dynamic from "next/dynamic"
@@ -66,10 +66,7 @@ export default function ResultsPage() {
             </Link>
             <div className="flex items-center gap-3">
               <Link href="/search"><Button variant="outline" size="sm">Изменить запрос</Button></Link>
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback className="bg-neutral-200 text-neutral-600">ИИ</AvatarFallback>
-              </Avatar>
+              <UserMenu />
             </div>
           </div>
         </header>

@@ -11,8 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { ArrowRight, Compass, MapPin, ThumbsUp, Filter } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import UserMenu from "@/components/user-menu";
 interface Poi {
   id: string;
   name: string;
@@ -116,12 +115,7 @@ export default function RecommendationsPage() {
                   Новый поиск
                 </Button>
               </Link>
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="/placeholder.svg" />
-                <AvatarFallback className="bg-neutral-200 text-neutral-600">
-                  ИИ
-                </AvatarFallback>
-              </Avatar>
+              <UserMenu />
             </div>
           </div>
         </header>
