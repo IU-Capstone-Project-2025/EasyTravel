@@ -1,5 +1,5 @@
 # app/services/UserService.py
-from uuid import uuid4
+from uuid import uuid4, UUID
 
 from fastapi import HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -36,3 +36,20 @@ async def add_user(dto: UserCreateDTO, session: AsyncSession) -> UserOutDTO:
     saved = await repo.add_user(entity)
     # repo.add_user returns entity.to_dict(); pydantic will pick it up
     return UserOutDTO(**saved)
+
+
+async def update_interests(user_id: UUID,interests: list[str], session: AsyncSession):
+    repo = UserRepository(session)
+    await repo.update_interests(user_id ,interests)
+
+async def update_city(user_id: UUID, city: str, session: AsyncSession):
+    repo = UserRepository(session)
+    await repo.update_city(user_id, city)
+
+async def update_additional_interests(user_id: UUID, interests: str, session: AsyncSession):
+    repo = UserRepository(session)
+    await repo.update_additional_interests(user_id, interests)
+
+async def update_about_me(user_id: UUID, about_me: str, session: AsyncSession):
+    repo = UserRepository(session)
+    await repo.update_about_me(user_id, about_me)

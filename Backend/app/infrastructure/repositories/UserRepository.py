@@ -43,3 +43,39 @@ class UserRepository:
         await self.session.commit()
         await self.session.refresh(user)
         return user.to_dict()
+
+    async def update_interests(self, user_id: UUID, interests: List[str]):
+        stmt = select(User).where(User.id == user_id)
+        result = await self.session.execute(stmt)
+        user = result.scalar_one_or_none()
+        if not user:
+            return None
+        user.interests = interests
+        await self.session.commit()
+
+    async def update_city(self, user_id: UUID, city: str):
+        stmt = select(User).where(User.id == user_id)
+        result = await self.session.execute(stmt)
+        user = result.scalar_one_or_none()
+        if not user:
+            return None
+        user.city = city
+        await self.session.commit()
+
+    async def update_additional_interests(self, user_id: UUID, additional_interests: str):
+        stmt = select(User).where(User.id == user_id)
+        result = await self.session.execute(stmt)
+        user = result.scalar_one_or_none()
+        if not user:
+            return None
+        user.additional_interests = additional_interests
+        await self.session.commit()
+
+    async def update_about_me(self, user_id: UUID, about_me: str):
+        stmt = select(User).where(User.id == user_id)
+        result = await self.session.execute(stmt)
+        user = result.scalar_one_or_none()
+        if not user:
+            return None
+        user.about_me = about_me
+        await self.session.commit()
