@@ -77,9 +77,9 @@ Copy .envexample and save it as .env
    pip install -r requirements.txt
    ```
 
-2**Start PostgreSQL** (if not already running) and create the database.
+2. **Start PostgreSQL** (if not already running) and create the database.
 
-3**Run the app**
+3. **Run the app**
 
    ```bash
    uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
