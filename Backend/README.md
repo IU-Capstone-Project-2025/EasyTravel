@@ -150,18 +150,19 @@ All subsequent calls require `Authorization: Bearer <access_token>` header.
 
 ### 1. User
 
-| Method | Path                                    | Body            | Response     |
-|--------|-----------------------------------------|-----------------|--------------|
-| `POST` | `/api/user/register`                    | `UserCreateDTO` | `UserOutDTO` |
-| `PUT`  | `/api/user/update_interests`            | `List[str]`     |              |
-| `PUT`  | `/api/user/update_sity`                 | `str`           |              |
-| `PUT`  | `/api/user/update_additional_interests` | `str`           |              |
-| `PUT`  | `/api/user/update_about_me`             | `str`           |              |
+| Method | Path                                             | Body            | Response     |
+|--------|--------------------------------------------------|-----------------|--------------|
+| `POST` | `/api/user/register`                             | `UserCreateDTO` | `UserOutDTO` |
+| `PUT`  | `/api/user/update_interests`                     | `List[str]`     |              |
+| `PUT`  | `/api/user/update_sity`                          | `str`           |              |
+| `PUT`  | `/api/user/update_additional_interests`          | `str`           |              |
+| `PUT`  | `/api/user/update_about_me`                      | `str`           |              |
+| `GET`  | `/api/user/interests`                            | `int`           | `List[str]`  |
 
 ### 2. Authentication
 
 | Method | Path                      | Body / Form                          | Response     |
-| ------ | ------------------------- | ------------------------------------ | ------------ |
+|--------|---------------------------|--------------------------------------|--------------|
 | `POST` | `/api/token/get-token`    | OAuth2PasswordRequestForm (email+pw) | `TokenDTO`   |
 | `POST` | `/api/token/refresh`      | `RefreshTokenDTO`                    | `TokenDTO`   |
 | `GET`  | `/api/token/current-user` | (Bearer token)                       | `UserOutDTO` |
@@ -175,10 +176,10 @@ All subsequent calls require `Authorization: Bearer <access_token>` header.
 
 ### 4. Favorites
 
-| Method | Path                                | Response        |
-| ------ | ----------------------------------- | --------------- |
-| `POST` | `/api/user/favorites/{poi_id}`       | `POIOutDTO`     |
-| `GET`  | `/api/user/favorites`               | `List[POIOutDTO]` |
+| Method   | Path                                  | Response          |
+|----------|---------------------------------------|-------------------|
+| `POST`   | `/api/user/favorites/{poi_id}`        | `POIOutDTO`       |
+| `GET`    | `/api/user/favorites`                 | `List[POIOutDTO]` |
 ---
 
 ## 📄 DTO Models

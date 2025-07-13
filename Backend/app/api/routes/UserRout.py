@@ -74,7 +74,7 @@ async def get_user_favorites_endpoint(
 ):
     return await get_favorites(current_user.id, session)
 
-@router.get("/favorites", response_model=List[POIOutDTO])
+@router.get("/interests", response_model=List[str])
 async def get_user_interests_endpoint(
     current_user: UserOutDTO = Depends(get_current_user_service),
     num: int = 3,
