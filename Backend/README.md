@@ -148,11 +148,15 @@ All subsequent calls require `Authorization: Bearer <access_token>` header.
 
 ## 📦 API Endpoints
 
-### 1. User Registration
+### 1. User
 
-| Method | Path                 | Body            | Response     |
-| ------ | -------------------- | --------------- | ------------ |
-| `POST` | `/api/user/register` | `UserCreateDTO` | `UserOutDTO` |
+| Method | Path                                    | Body            | Response     |
+|--------|-----------------------------------------|-----------------|--------------|
+| `POST` | `/api/user/register`                    | `UserCreateDTO` | `UserOutDTO` |
+| `PUT`  | `/api/user/update_interests`            | `List[str]`     |              |
+| `PUT`  | `/api/user/update_sity`                 | `str`           |              |
+| `PUT`  | `/api/user/update_additional_interests` | `str`           |              |
+| `PUT`  | `/api/user/update_about_me`             | `str`           |              |
 
 ### 2. Authentication
 
@@ -169,6 +173,12 @@ All subsequent calls require `Authorization: Bearer <access_token>` header.
 | `GET`  | `/api/poi/?q=<text>&city=<city>&limit=<n>` | `q` (required), `city` (opt), `limit` (1–50)   | `List[POIOutDTO]` |
 | `GET`  | `/api/poi/recommendations?limit=<n>`       | `limit` (1–50), (uses user’s interests & city) | `List[POIOutDTO]` |
 
+### 4. Favorites
+
+| Method | Path                                | Response        |
+| ------ | ----------------------------------- | --------------- |
+| `POST` | `/api/user/favorites/{poi_id}`       | `POIOutDTO`     |
+| `GET`  | `/api/user/favorites`               | `List[POIOutDTO]` |
 ---
 
 ## 📄 DTO Models

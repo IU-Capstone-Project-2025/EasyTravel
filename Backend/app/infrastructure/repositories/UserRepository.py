@@ -79,3 +79,11 @@ class UserRepository:
             return None
         user.about_me = about_me
         await self.session.commit()
+
+
+    async def get_interests(self, user_id: UUID) -> List[str]:
+        stmt = select(User).where(User.id == user_id)
+        result = await self.session.execute(stmt)
+        user = result.scalar_one_or_none()
+        return user.interests
+

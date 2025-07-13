@@ -10,13 +10,14 @@ from app.models.dtoModels.UserDTO import UserCreateDTO, UserOutDTO
 from app.services.AuthorizationService import get_current_user_service
 from app.services.POIService import POIService
 from app.services.UserService import add_user, update_interests, update_city, update_additional_interests, \
-    update_about_me
+    update_about_me, get_user_interests
+from app.services.FavoriteService import add_favorite, get_favorites
 
 router = APIRouter()
 
 
 @router.post("/register", response_model=UserOutDTO, status_code=status.HTTP_201_CREATED)
-async def register(
+async def register_endpoint(
     dto: UserCreateDTO,
     session: AsyncSession = Depends(fastapi_get_db),
 ):
@@ -55,3 +56,28 @@ async def update_about_me_endpoint(
         current_user: UserOutDTO = Depends(get_current_user_service),
 ):
     await update_about_me(current_user.id, about_me, session)
+
+
+@router.post("/favorites/{poi_id}", response_model=POIOutDTO, status_code=status.HTTP_201_CREATED)
+async def add_poi_to_favorites_endpoint(
+    poi_id: str,
+    current_user: UserOutDTO = Depends(get_current_user_service),
+    session: AsyncSession = Depends(fastapi_get_db),
+):
+    return await add_favorite(current_user.id, poi_id, session)
+
+
+@router.get("/favorites", response_model=List[POIOutDTO])
+async def get_user_favorites_endpoint(
+    current_user: UserOutDTO = Depends(get_current_user_service),
+    session: AsyncSession = Depends(fastapi_get_db),
+):
+    return await get_favorites(current_user.id, session)
+
+@router.get("/favorites", response_model=List[POIOutDTO])
+async def get_user_interests_endpoint(
+    current_user: UserOutDTO = Depends(get_current_user_service),
+    num: int = 3,
+    session: AsyncSession = Depends(fastapi_get_db),
+):
+    return await get_user_interests(current_user.id, num, session)
