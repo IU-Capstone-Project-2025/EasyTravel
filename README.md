@@ -41,6 +41,19 @@ EasyTravel
 * **Data Processing**: Python, Pandas, NumPy
 * **Containerization**: Docker, docker-compose
 
+## 🖥️ Prerequisites
+
+1. **FAISS index file**  
+   We keep the heavy `poi_ivfpq.poi_ivfpq` on Google Drive rather than in Git.  
+    download all files
+    https://drive.google.com/drive/folders/1QCts-pkFMKhGErPVhY9i7WJI4ihmvG3f?usp=sharing
+2. Copy to DIR like:
+   - LaBSE_emb.npy -> /DLS/experiments/indexes/LaBSE_emb.npy
+   - MiniLM-6-L12_emb.npy ->/DLS/experiments/indexes/MiniLM-6-L12_emb.npy
+   - MiniLM-12-L6_emb.npy -> /DLS/experiments/indexes/MiniLM-12-L6_emb.npy
+   - poi_embeddings.npy -> /DLS/Embeddings/poi_embeddings.npy
+---
+
 ---
 
 ## 🚀 Getting Started
@@ -69,7 +82,7 @@ All search & recommendation experiments, benchmarking scripts, and results are u
 
 * **Backend API**: [Backend/README.md](Backend/README.md)
 * **Search Engine & Data**: [DLS/README.md](DLS/README.md)
-* **Frontend**: (to be provided separately)
+* **Frontend**: [Frontend/README.md](Frontend/README.md)
 
 ---
 

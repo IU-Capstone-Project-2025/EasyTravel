@@ -20,6 +20,7 @@ def search_poi(
     city: Optional[str]       = None,
     limit: int                = Query(10, ge=1, le=50),
     service: POIService       = Depends(get_poi_service),
+    tags: Optional[List[str]] = None,
 ):
     """
     Search POIs by free-text query and optional city filter.

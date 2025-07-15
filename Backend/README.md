@@ -77,9 +77,9 @@ Copy .envexample and save it as .env
    pip install -r requirements.txt
    ```
 
-2**Start PostgreSQL** (if not already running) and create the database.
+2. **Start PostgreSQL** (if not already running) and create the database.
 
-3**Run the app**
+3. **Run the app**
 
    ```bash
    uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
@@ -148,16 +148,21 @@ All subsequent calls require `Authorization: Bearer <access_token>` header.
 
 ## 📦 API Endpoints
 
-### 1. User Registration
+### 1. User
 
-| Method | Path                 | Body            | Response     |
-| ------ | -------------------- | --------------- | ------------ |
-| `POST` | `/api/user/register` | `UserCreateDTO` | `UserOutDTO` |
+| Method | Path                                             | Body            | Response     |
+|--------|--------------------------------------------------|-----------------|--------------|
+| `POST` | `/api/user/register`                             | `UserCreateDTO` | `UserOutDTO` |
+| `PUT`  | `/api/user/update_interests`                     | `List[str]`     |              |
+| `PUT`  | `/api/user/update_sity`                          | `str`           |              |
+| `PUT`  | `/api/user/update_additional_interests`          | `str`           |              |
+| `PUT`  | `/api/user/update_about_me`                      | `str`           |              |
+| `GET`  | `/api/user/interests`                            | `int`           | `List[str]`  |
 
 ### 2. Authentication
 
 | Method | Path                      | Body / Form                          | Response     |
-| ------ | ------------------------- | ------------------------------------ | ------------ |
+|--------|---------------------------|--------------------------------------|--------------|
 | `POST` | `/api/token/get-token`    | OAuth2PasswordRequestForm (email+pw) | `TokenDTO`   |
 | `POST` | `/api/token/refresh`      | `RefreshTokenDTO`                    | `TokenDTO`   |
 | `GET`  | `/api/token/current-user` | (Bearer token)                       | `UserOutDTO` |
@@ -169,6 +174,12 @@ All subsequent calls require `Authorization: Bearer <access_token>` header.
 | `GET`  | `/api/poi/?q=<text>&city=<city>&limit=<n>` | `q` (required), `city` (opt), `limit` (1–50)   | `List[POIOutDTO]` |
 | `GET`  | `/api/poi/recommendations?limit=<n>`       | `limit` (1–50), (uses user’s interests & city) | `List[POIOutDTO]` |
 
+### 4. Favorites
+
+| Method   | Path                                  | Response          |
+|----------|---------------------------------------|-------------------|
+| `POST`   | `/api/user/favorites/{poi_id}`        | `POIOutDTO`       |
+| `GET`    | `/api/user/favorites`                 | `List[POIOutDTO]` |
 ---
 
 ## 📄 DTO Models
