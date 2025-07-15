@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Cookies from "js-cookie";
-import { Compass } from "lucide-react";
-import UserMenu from "@/components/user-menu";
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import Cookies from 'js-cookie';
+import { Compass } from 'lucide-react';
 
 export default function LoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const loggedIn = Boolean(Cookies.get("access_token"));
-  const homeLink = loggedIn ? "/recommendations" : "/";
+  const loggedIn = Boolean(Cookies.get('access_token'));
+  const homeLink = loggedIn ? '/recommendations' : '/';
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,62 +41,42 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <header className="border-b py-4">
-        <div className="container flex justify-between items-center">
-          <Link href={homeLink} className="flex items-center gap-2">
-            <Compass className="h-6 w-6 text-neutral-900" />
-            <span className="font-medium text-xl">EasyTravel</span>
-          </Link>
-          {loggedIn ? (
-            <UserMenu />
-          ) : (
-            <Link href="/register">
-              <Button variant="outline" size="sm">
-                Регистрация
-              </Button>
+      <div className="min-h-screen flex flex-col">
+        <header className="border-b py-4">
+          <div className="container flex justify-between items-center">
+            <Link href={homeLink} className="flex items-center gap-2">
+              <Compass className="h-6 w-6 text-neutral-900" />
+              <span className="font-medium text-xl">EasyTravel</span>
             </Link>
-          )}
-        </div>
-      </header>
+            {!loggedIn && (
+                <Link href="/register">
+                  <Button variant="outline" size="sm">Регистрация</Button>
+                </Link>
+            )}
+          </div>
+        </header>
 
-      <main className="flex-1 container py-12">
-        <div className="max-w-md mx-auto">
-          <h1 className="text-2xl font-bold mb-4">Вход</h1>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Пароль</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-            </div>
-            {error && <p className="text-red-600 text-sm">{error}</p>}
-            <Button type="submit" className="w-full">
-              Войти
-            </Button>
-          </form>
-        </div>
-      </main>
+        <main className="flex-1 container py-12">
+          <div className="max-w-md mx-auto">
+            <h1 className="text-2xl font-bold mb-4">Вход</h1>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* поля email/password и ошибка */}
+              <div className="text-center">
+                Нет аккаунта?{' '}
+                <Link href="/register" className="text-blue-600 hover:underline">
+                  Зарегистрируйтесь
+                </Link>
+              </div>
+              <Button type="submit" className="w-full">Войти</Button>
+            </form>
+          </div>
+        </main>
 
-      <footer className="border-t py-6">
-        <div className="container text-center text-neutral-500 text-sm">
-          © 2023 EasyTravel. Все права защищены.
-        </div>
-      </footer>
-    </div>
+        <footer className="border-t py-6">
+          <div className="container text-center text-neutral-500 text-sm">
+            © 2023 EasyTravel. Все права защищены.
+          </div>
+        </footer>
+      </div>
   );
 }

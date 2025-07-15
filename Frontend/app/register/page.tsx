@@ -1,72 +1,60 @@
-"use client";
-import React, { useState } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Textarea } from "@/components/ui/textarea";
-import { ArrowLeft, ArrowRight, Compass } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import Cookies from "js-cookie";
+'use client';
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { ArrowLeft, ArrowRight, Compass } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import Cookies from 'js-cookie';
 
 const interestsList = [
-  "Музеи",
-  "Искусство",
-  "История",
-  "Архитектура",
-  "Природа",
-  "Парки",
-  "Кафе",
-  "Рестораны",
-  "Шоппинг",
-  "Спорт",
-  "Активный отдых",
-  "Ночная жизнь",
-  "Местная кухня",
-  "Фотография",
-  "Тихие места",
+  'Музеи', 'Искусство', 'История', 'Архитектура',
+  'Природа', 'Парки', 'Кафе', 'Рестораны',
+  'Шоппинг', 'Спорт', 'Активный отдых', 'Ночная жизнь',
+  'Местная кухня', 'Фотография', 'Тихие места',
 ];
 
 const interestsMap: Record<string, string> = {
-  "Музеи": "museums",
-  "Искусство": "art",
-  "История": "history",
-  "Архитектура": "architecture",
-  "Природа": "nature",
-  "Парки": "parks",
-  "Кафе": "cafes",
-  "Рестораны": "restaurants",
-  "Шоппинг": "shopping",
-  "Спорт": "sports",
-  "Активный отдых": "active",
-  "Ночная жизнь": "nightlife",
-  "Местная кухня": "cuisine",
-  "Фотография": "photography",
-  "Тихие места": "quiet",
+  'Музеи': 'museums',
+  'Искусство': 'art',
+  'История': 'history',
+  'Архитектура': 'architecture',
+  'Природа': 'nature',
+  'Парки': 'parks',
+  'Кафе': 'cafes',
+  'Рестораны': 'restaurants',
+  'Шоппинг': 'shopping',
+  'Спорт': 'sports',
+  'Активный отдых': 'active',
+  'Ночная жизнь': 'nightlife',
+  'Местная кухня': 'cuisine',
+  'Фотография': 'photography',
+  'Тихие места': 'quiet',
 };
 
 export default function RegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
-  const homeLink = Cookies.get("access_token") ? "/recommendations" : "/";
+  const homeLink = Cookies.get('access_token') ? '/recommendations' : '/';
 
-  // Step 1 fields
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [city, setCity] = useState("");
-  const [bio, setBio] = useState("");
+  // Step 1
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [city, setCity] = useState('');
+  const [bio, setBio] = useState('');
 
-  // Step 2 fields
+  // Step 2
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
-  const [preferences, setPreferences] = useState("");
+  const [preferences, setPreferences] = useState('');
 
   const handleInterestToggle = (interest: string) => {
-    setSelectedInterests((prev) =>
-        prev.includes(interest) ? prev.filter((i) => i !== interest) : [...prev, interest]
+    setSelectedInterests(prev =>
+        prev.includes(interest) ? prev.filter(i => i !== interest) : [...prev, interest]
     );
   };
 
@@ -131,6 +119,9 @@ export default function RegisterPage() {
             <Link href={homeLink} className="flex items-center gap-2">
               <Compass className="h-6 w-6 text-neutral-900" />
               <span className="font-medium text-xl">EasyTravel</span>
+            </Link>
+            <Link href="/login">
+              <Button variant="outline" size="sm">Войти</Button>
             </Link>
           </div>
         </header>
@@ -298,7 +289,9 @@ export default function RegisterPage() {
         </main>
 
         <footer className="border-t py-6">
-          <div className="container text-center text-neutral-500 text-sm">© 2023 EasyTravel. Все права защищены.</div>
+          <div className="container text-center text-neutral-500 text-sm">
+            © 2023 EasyTravel. Все права защищены.
+          </div>
         </footer>
       </div>
   );
