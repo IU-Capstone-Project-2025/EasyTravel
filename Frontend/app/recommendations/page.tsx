@@ -82,14 +82,11 @@ export default function RecommendationsPage() {
                   <p className="text-neutral-600 mb-4 text-sm">
                     {place.description.slice(0, 100)}…
                   </p>
-                  {/* В API нет тегов, можно выводить type или city */}
+                  {/* В API нет тегов, можно выводить type или city
                   <div className="flex flex-wrap gap-2 mb-4">
                     <Badge variant="outline">{place.type}</Badge>
-                  </div>
+                  </div>*/}
                   <div className="flex justify-between">
-                    <Button variant="outline" size="sm">
-                      Подробнее
-                    </Button>
                     <Button variant="ghost" size="sm">
                       Сохранить
                     </Button>
@@ -146,10 +143,6 @@ export default function RecommendationsPage() {
                 <TabsTrigger value="nature">Природа</TabsTrigger>
                 <TabsTrigger value="food">Еда и напитки</TabsTrigger>
               </TabsList>
-              <Button variant="ghost" size="sm" className="gap-2">
-                <Filter className="h-4 w-4" />
-                Фильтры
-              </Button>
             </div>
 
             {/* Пока все вкладки показывают одинаковый список recs */}

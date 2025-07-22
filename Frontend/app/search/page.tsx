@@ -168,11 +168,6 @@ export default function SearchPage() {
                     ))}
                   </SelectContent>
                 </Select>
-                <Input
-                  placeholder="Или введите другое место"
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                />
               </div>
               <div className="flex flex-wrap gap-2 mt-2">
                 {popularCities.slice(0, 4).map((city) => (
