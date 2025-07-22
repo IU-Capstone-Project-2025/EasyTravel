@@ -10,7 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { ArrowRight, Compass, MapPin, ThumbsUp, Filter } from "lucide-react";
+import { ArrowRight, Compass, MapPin } from "lucide-react";
 import UserMenu from "@/components/user-menu";
 interface Poi {
   id: string;
@@ -24,12 +24,27 @@ interface Poi {
 }
 
 export default function RecommendationsPage() {
-  const [activeTab, setActiveTab] = useState<"all"|"museums"|"nature"|"food">("all");
+  const [activeTab, setActiveTab] = useState<string>('all');
+  const [userInterests, setUserInterests] = useState<string[]>([]);
   const [recs, setRecs] = useState<Poi[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string|null>(null);
   const limit = 10;
   const homeLink = Cookies.get("access_token") ? "/recommendations" : "/";
+
+  const handleSave = async (id: string) => {
+    const token = Cookies.get('access_token');
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/user/favorites/${id}`, {
+        method: 'POST',
+        headers: { Authorization: 'Bearer ' + token },
+      });
+      if (!res.ok) throw new Error('Failed to save');
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   useEffect(() => {
     const fetchRecs = async () => {
@@ -51,17 +66,32 @@ export default function RecommendationsPage() {
         setLoading(false);
       }
     };
+     const fetchInterests = async () => {
+      const token = Cookies.get('access_token');
+      if (!token) return;
+      try {
+        const res = await fetch('/api/user/interests?num=3', {
+          headers: { Authorization: 'Bearer ' + token },
+        });
+        if (res.ok) {
+          const data: string[] = await res.json();
+          setUserInterests(data);
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    };
     fetchRecs();
+    fetchInterests();
   }, []);
 
-  const renderList = () => {
+  const renderList = (list: Poi[]) => {
     if (loading) return <p>Загрузка рекомендаций…</p>;
     if (error) return <p className="text-red-600">{error}</p>;
-    if (recs.length === 0) return <p>Нет рекомендаций.</p>;
-
+    if (list.length === 0) return <p>Нет рекомендаций.</p>;
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {recs.map((place) => (
+          {list.map((place) => (
               <Card key={place.id} className="overflow-hidden">
                 <div className="relative h-48 bg-neutral-100 flex items-center justify-center">
                   {/* Замените на реальную картинку, когда будет */}
@@ -70,10 +100,6 @@ export default function RecommendationsPage() {
                 <CardContent className="p-5">
                   <div className="flex justify-between items-start mb-2">
                     <h3 className="font-medium text-lg">{place.name}</h3>
-                    <div className="flex items-center gap-1 bg-neutral-100 px-2 py-1 rounded text-sm">
-                      <ThumbsUp className="h-3.5 w-3.5" />
-                      <span>{place.score.toFixed(1)}</span>
-                    </div>
                   </div>
                   <div className="flex items-center text-neutral-600 text-sm mb-3">
                     <MapPin className="h-3.5 w-3.5 mr-1" />
@@ -86,11 +112,11 @@ export default function RecommendationsPage() {
                   <div className="flex flex-wrap gap-2 mb-4">
                     <Badge variant="outline">{place.type}</Badge>
                   </div>*/}
-                  <div className="flex justify-between">
-                    <Button variant="ghost" size="sm">
-                      Сохранить
-                    </Button>
-                  </div>
+                    <div className="flex justify-between">
+                      <Button variant="ghost" size="sm" onClick={() => handleSave(place.id)}>
+                        Сохранить
+                      </Button>
+                    </div>
                 </CardContent>
               </Card>
           ))}
@@ -139,17 +165,18 @@ export default function RecommendationsPage() {
             <div className="flex justify-between items-center mb-4">
               <TabsList>
                 <TabsTrigger value="all">Все</TabsTrigger>
-                <TabsTrigger value="museums">Музеи</TabsTrigger>
-                <TabsTrigger value="nature">Природа</TabsTrigger>
-                <TabsTrigger value="food">Еда и напитки</TabsTrigger>
+                {userInterests.map((i) => (
+                  <TabsTrigger key={i} value={i}>{i}</TabsTrigger>
+                ))}
               </TabsList>
             </div>
 
-            {/* Пока все вкладки показывают одинаковый список recs */}
-            <TabsContent value="all">{renderList()}</TabsContent>
-            <TabsContent value="museums">{renderList()}</TabsContent>
-            <TabsContent value="nature">{renderList()}</TabsContent>
-            <TabsContent value="food">{renderList()}</TabsContent>
+                        <TabsContent value="all">{renderList(recs)}</TabsContent>
+            {userInterests.map((i) => (
+              <TabsContent key={i} value={i}>
+                {renderList(recs.filter((p) => p.type === i))}
+              </TabsContent>
+            ))}
           </Tabs>
         </main>
 

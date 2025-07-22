@@ -6,7 +6,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Compass, MapPin, ThumbsUp, Filter, List, MapIcon, ArrowRight } from "lucide-react"
+import { Compass, MapPin, List, MapIcon, ArrowRight } from "lucide-react"
 import Cookies from "js-cookie"
 import UserMenu from "@/components/user-menu"
 
@@ -117,10 +117,6 @@ export default function ResultsPage() {
                     <CardContent className="p-5 md:w-2/3">
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="font-medium text-lg">{place.name}</h3>
-                        <div className="flex items-center gap-1 bg-neutral-100 px-2 py-1 rounded text-sm">
-                          <ThumbsUp className="h-3.5 w-3.5" />
-                          <span>{place.rating}</span>
-                        </div>
                       </div>
                       <div className="flex items-center text-neutral-600 text-sm mb-3">
                         <MapPin className="h-3.5 w-3.5 mr-1" />{place.location}
@@ -130,7 +126,6 @@ export default function ResultsPage() {
                         {place.tags.map(tag => <Badge key={tag} variant="secondary" className="font-normal">{tag}</Badge>)}
                       </div>
                       <div className="flex justify-between">
-                        <Button variant="outline" size="sm">Подробнее</Button>
                         <Button variant="ghost" size="sm">Сохранить</Button>
                       </div>
                     </CardContent>
