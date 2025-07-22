@@ -12,6 +12,11 @@ export default function UserMenu() {
     router.push("/profile");
   };
 
+  const handleFavorites = () => {
+    router.push("/favorites");
+  };
+
+
   const handleLogout = () => {
     Cookies.remove("access_token");
     if (typeof window !== "undefined") {
@@ -30,6 +35,7 @@ export default function UserMenu() {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <DropdownMenuItem onSelect={handleProfile}>Профиль</DropdownMenuItem>
+        <DropdownMenuItem onSelect={handleFavorites}>Избранное</DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem onSelect={handleLogout}>Выйти</DropdownMenuItem>
       </DropdownMenuContent>

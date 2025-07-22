@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Cookies from "js-cookie";
@@ -18,7 +18,15 @@ import {
 } from "@/components/ui/select";
 
 import { Compass, Search as SearchIcon, MapPin, Tag } from "lucide-react";
+import dynamic from "next/dynamic";
+import 'leaflet/dist/leaflet.css';
 import UserMenu from "@/components/user-menu";
+
+const MapContainer = dynamic(() => import('react-leaflet').then(mod => mod.MapContainer), { ssr: false });
+const TileLayer = dynamic(() => import('react-leaflet').then(mod => mod.TileLayer), { ssr: false });
+const Marker = dynamic(() => import('react-leaflet').then(mod => mod.Marker), { ssr: false });
+const Popup = dynamic(() => import('react-leaflet').then(mod => mod.Popup), { ssr: false });
+
 
 const popularCities = [
   "Москва",
@@ -31,13 +39,23 @@ const popularCities = [
 
 const popularTags = [
   "Музеи",
-  "Парки",
-  "Архитектура",
-  "Кафе",
-  "Тихие места",
-  "История",
   "Искусство",
+  "История",
+  "Архитектура",
+  "Природа",
+  "Парки",
+  "Кафе",
+  "Рестораны",
+  "Шоппинг",
+  "Спорт",
+  "Активный отдых",
+  "Отдых",
+  "Ночная жизнь",
+  "Местные места",
   "Местная кухня",
+  "Фотография",
+  "Тихие места",
+  "Интересные места",
 ];
 
 interface Poi {
@@ -57,6 +75,18 @@ export default function SearchPage() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [results, setResults] = useState<Poi[]>([]);
   const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const L = require('leaflet');
+      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      L.Icon.Default.mergeOptions({
+        iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+        iconUrl: require('leaflet/dist/images/marker-icon.png'),
+        shadowUrl: require('leaflet/dist/images/marker-shadow.png'),
+      });
+    }
+  }, []);
 
   const handleTagToggle = (tag: string) => {
     setSelectedTags((prev) =>
@@ -100,6 +130,20 @@ export default function SearchPage() {
     } catch (err: any) {
       console.error(err);
       setError(err.message);
+    }
+  };
+
+    const handleSave = async (id: string) => {
+    const token = Cookies.get("access_token");
+    if (!token) return;
+    try {
+      const res = await fetch(`/api/user/favorites/${id}`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error('Failed to save');
+    } catch (e) {
+      console.error(e);
     }
   };
 
@@ -212,17 +256,39 @@ export default function SearchPage() {
           {error && <p className="mt-4 text-red-600">{error}</p>}
 
           {results.length > 0 && (
-            <ul className="mt-8 space-y-4">
-              {results.map((poi) => (
-                <li key={poi.id} className="border p-4 rounded">
-                  <h3 className="font-semibold">{poi.name}</h3>
-                  <p className="text-sm text-neutral-600">{poi.city}</p>
-                  <p className="mt-2 text-base">
-                    {poi.description.slice(0, 100)}…
-                  </p>
-                </li>
-              ))}
-            </ul>
+                        <>
+              <ul className="mt-8 space-y-4">
+                {results.map((poi) => (
+                  <li key={poi.id} className="border p-4 rounded">
+                    <h3 className="font-semibold">{poi.name}</h3>
+                    <p className="text-sm text-neutral-600">{poi.city}</p>
+                    <p className="mt-2 text-base">
+                      {poi.description.slice(0, 100)}…
+                    </p>
+                    <div className="mt-2">
+                      <Button variant="ghost" size="sm" onClick={() => handleSave(poi.id)}>
+                        Сохранить
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="h-[400px] w-full mt-8">
+                <MapContainer center={[results[0].lat, results[0].lon]} zoom={13} style={{ height: '100%', width: '100%' }} attributionControl={false}>
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" attribution="" />
+                  {results.map((poi) => (
+                    <Marker key={poi.id} position={[poi.lat, poi.lon]}>
+                      <Popup>
+                        <strong>{poi.name}</strong>
+                        <br />
+                        {poi.city}
+                      </Popup>
+                    </Marker>
+                  ))}
+                </MapContainer>
+              </div>
+            </>
           )}
         </div>
       </main>
